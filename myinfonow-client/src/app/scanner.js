@@ -2,11 +2,11 @@ import { Html5Qrcode, Html5QrcodeScanner } from "html5-qrcode";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function Scanner() {
+function Scanner(props) {
   const [scanResult, setScanResult] = useState(null);
   const [cameraId, setCameraId] = useState(null); 
-  const [userInfo, setUserInfo] = useState("");
-
+  // const [userInfo, setUserInfo] = useState("");
+  
   useEffect(() => {
     if (scanResult) {
       const { username, presetID } = JSON.parse(scanResult);
@@ -20,7 +20,8 @@ function Scanner() {
         username,
         presetID,
       });
-      setUserInfo(response.data.data);
+      props.handleResult(response.data.data);
+    
     } catch (error) {
       console.error("Error fetching user info", error);
     }
@@ -73,23 +74,23 @@ function Scanner() {
 
   }, [cameraId]);
 
-  return (
-    <div>
-      <div id="reader"></div>
-      {scanResult && (
-        <div>
-          Success! QR Code: <a href={scanResult}>{scanResult}</a>
-        </div>
-      )}
+  // return (
+  //   <div>
+  //     <div id="reader"></div>
+  //     {scanResult && (
+  //       <div>
+  //         Success! QR Code: <a href={scanResult}>{scanResult}</a>
+  //       </div>
+  //     )}
 
-      {userInfo && (
-        <div>
-          <h3>User Info</h3>
-          <pre>{JSON.stringify(userInfo, null, 2)}</pre>
-        </div>
-      )}
-    </div>
-  );
+  //     {userInfo && (
+  //       <div>
+  //         <h3>User Info</h3>
+  //         <pre>{JSON.stringify(userInfo, null, 2)}</pre>
+  //       </div>
+  //     )}
+  //   </div>
+  // );
 }
 
 export default Scanner;

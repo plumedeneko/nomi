@@ -47,7 +47,6 @@ export default function MainContent(props) {
   useEffect(() => {
     if (presetID) {
       fetchQRCode(presetID);
-      // fetchUserInfo(username);
       fetchPreset(presetID);
       fetchAllUserInfo(username);
     }
@@ -59,13 +58,12 @@ export default function MainContent(props) {
   const handleUpdateInfo = async (userData) => {
     try {
       const response = await axios.put("http://localhost:5050/users/update-info", userData);
-      console.log(response.data); // Handle the response as needed
+      console.log(response.data);
     } catch (error) {
       console.error(error.message);
     }
   };
 
-  // Fetch QR Code using presetID
   const fetchQRCode = async (presetID) => {
     try {
       console.log(`${username} ${presetID}`)
@@ -75,7 +73,7 @@ export default function MainContent(props) {
         body: JSON.stringify({username: username, presetID: presetID})
       });
      const data = await response.json();
-      setQrCode(data.qrCode); // Set QR code image
+      setQrCode(data.qrCode);
     } catch (error) {
       console.error(error);
     }
@@ -112,20 +110,18 @@ export default function MainContent(props) {
     }
   };
 
-  // Fetch user info by presetID
   const fetchUserInfo = async (username) => {
     try {
       const response = await axios.post("http://localhost:5050/users/get-info", {
         username,
         presetID
       });
-      setUserInfo(response.data.data); // Assuming backend returns user data in `data`
+      setUserInfo(response.data.data);
     } catch (error) {
       console.error("Error fetching user info", error);
     }
   };
 
-  // Handle saving preset
   const handleSave = async () => {
     try {
       saveFlags();
@@ -155,8 +151,6 @@ export default function MainContent(props) {
     }
   }
 
-
-
   function handleUserState(event) {
     const {name, value} = event.target;
     setUserInfo(prev => ({
@@ -173,39 +167,29 @@ export default function MainContent(props) {
     }))
   }
 
-
-
   return (
     <div className="flex flex-col h-screen bg-gray-100 p-6">
-    {/* Header Section */}
     <div className="flex items-center justify-between mb-4">
       <h1 className="text-2xl font-bold text-black">MyInfoNow</h1>
       
-      {/* Centered Welcome Message */}
       <h2 className="text-2xl font-semibold shadow-2xl text-center text-black">Welcome!</h2>
 
       <button className="px-4 py-2 text-white bg-red-500 rounded-lg">Sign Out</button>
     </div>
 
-    {/* Main Content Section */}
     <div className="flex justify-center">
-      {/* Left Section - Presets and Item List */}
       <div className="w-35 mr-6">
-        {/* Preset Buttons */}
         <div className="flex space-x-4 mb-4">
           <button onClick={() => setPresetID("p1")} className="px-10 py-2 bg-blue-500 text-white rounded-lg">Preset 1</button>
           <button onClick={() => setPresetID("p2")} className="px-10 py-2 bg-blue-500 text-white rounded-lg">Preset 2</button>
           <button onClick={() => setPresetID("p3")} className="px-10 py-2 bg-blue-500 text-white rounded-lg">Preset 3</button>
           <button onClick={handleSave} className="px-12 py-2 bg-green-500 text-white rounded-lg">Save</button>
         </div>
-        
-        {/* Item List */}
 
         <FormContent flags={flags} userInfo={userInfo} handleFlags={handleFlags} handleUserState={handleUserState} />
       
       </div>
 
-      {/* Right Section - QR Code */}
       <div className="w-[50vh] flex items-center justify-center shadow-2xl shadow-zinc-500 border-zinc-500 border-2 bg-white p-8 shadow-2xl rounded-lg">
         {qrCode ? (
           <img src={qrCode} alt="QR Code" className="object-contain w-full" />

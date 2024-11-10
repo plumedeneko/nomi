@@ -32,7 +32,7 @@ export default function Login(props) {
             }
             
             const { token, username } = await response.json();
-            
+
             if (token)
                 login(token, username);
             

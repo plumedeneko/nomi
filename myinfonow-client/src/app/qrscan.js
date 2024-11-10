@@ -5,7 +5,7 @@ export default function QRScan(props) {
         <div>
 
             <button onClick={() => props.setPage(1)} >Return</button>
-            <Scanner/>
+            <Scanner handleResult={props.handleResult}/>
             <h1 id="reader"> test</h1>
         </div>
     )
