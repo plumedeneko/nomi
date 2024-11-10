@@ -240,7 +240,7 @@ infoRouter.put('/update-preset', async (req, res) => {
     }
 });
 
-infoRouter.get('/get-info', async (req, res) => {
+infoRouter.post('/get-info', async (req, res) => {
     try{
         const { username, presetID } = req.body;
         
@@ -284,7 +284,28 @@ infoRouter.get('/get-info', async (req, res) => {
     }
 });
 
-infoRouter.get('/get-preset', async (req, res) => {
+infoRouter.post('/get-allinfo', async (req, res) => {
+    try{
+        const { username } = req.body;
+        
+        if (!username){
+            return res.status(400).json({ message: 'Username is required'});
+        }
+                
+        const userinfo = await UserInfo.findOne({ username }).select('-username');
+        
+        if (!userinfo){
+            return res.status(404).json({ message: 'Data not found for this user' });
+        }
+        
+        res.status(200).json({ data: userinfo });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error fetching user info', error: err.message });
+    }
+});
+
+infoRouter.post('/get-preset', async (req, res) => {
     try{
         const { username, presetID } = req.body;
 
@@ -309,7 +330,7 @@ infoRouter.get('/get-preset', async (req, res) => {
     }
 });
 
-infoRouter.get('/get-qr', async (req, res) => {
+infoRouter.post('/get-qr', async (req, res) => {
     try{
         const{ username, presetID } = req.body;
 
@@ -337,7 +358,6 @@ infoRouter.get('/get-qr', async (req, res) => {
 const generate_qr = async (username, presetID) => {
     try{
         const qrData = JSON.stringify({ username, presetID });
-
         return await QRCode.toDataURL(qrData);
     }catch(err){
         throw new Error("Error generating qr");

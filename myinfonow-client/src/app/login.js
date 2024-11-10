@@ -4,6 +4,7 @@ import Link from 'next/link';
 import {useState} from "react"
 import './globals.css'
 import Scanner from './scanner'
+import { useAuth } from './authprovider';
 
 export default function Login(props) {
     
@@ -12,7 +13,8 @@ export default function Login(props) {
         password: ""
     });
   
-    const [error, setError] = useState (" ")
+    const [error, setError] = useState (" ");
+    const { login } = useAuth();
       
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -29,38 +31,41 @@ export default function Login(props) {
                 return;
             }
             
-            const { token } = await response.json();
-
+            const { token, username } = await response.json();
+            
             if (token)
-                localStorage.setItem('token', token);
-
+                login(token, username);
+            
+            props.setPage(3);
+        
+        
         } catch(error){
             setError("An error occurred during login. Please try Again.")
     }
-
-};
+    
+    };
   
-const handleChange = (event) => {
-    const { name, value } = event.target;
-    setLoginInfo((prevLogin) => ({
-        ...prevLogin,
-        [name]: value,
-    }));
-};
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setLoginInfo((prevLogin) => ({
+            ...prevLogin,
+            [name]: value,
+        }));
+    };
      
 
      return (
         <div>
-            <div className="flex h-screen w-full items-center justify-center bg-gray-50">
+            <div className="flex flex-col h-screen w-full items-center justify-center bg-gray-50">
                 <div className='flex items-center justify-center bg-gray-50'>
-                    <div className='flex m-10 p-20 shadow-2xl shadow-red-200 rounded-3xl border border-red-500 bg-white-100'>
+                    <div className='flex m-10 p-20 shadow-2xl shadow-zinc-200 rounded-3xl border border-red-500 bg-white-100'>
                         <p className='text-black font-serif tracking-wide font-bold text-lg antialiased'> 
                             MyInfoNow
                         </p>
                     </div>
                 </div>
     
-                <div className="z-10 w-full max-w-md overflow-hidden rounded-3xl border border-blue-500 shadow-xl shadow-blue-200 text-gray-400">
+                <div className="z-10 w-full max-w-md overflow-hidden rounded-3xl border border-red-500 shadow-xl shadow-zinc-200 text-gray-400">
                     <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-200 bg-white px-4 py-6 pt-8 text-center sm:px-16">
                         <h3 className="text-xl font-semibold text-black">Sign In</h3>
                         <p className="text-sm text-gray-400">
@@ -127,7 +132,7 @@ const handleChange = (event) => {
     
                             <p className="text-center text-sm text-gray-600">
                                 {"Don't have an account? "}
-                                <a onClick={() => props.setPage(2)}>Sign up</a>
+                                <a onClick={() => props.setPage(2)} className= "text-red-500 hover:text-blue-500 hover:cursor-pointer ">Sign up</a>
                                 
                             </p>
                         </div>

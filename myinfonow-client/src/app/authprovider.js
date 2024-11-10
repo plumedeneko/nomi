@@ -3,24 +3,40 @@ import React, { useState, createContext, useContext, useEffect } from 'react';
 const AuthContext = createContext();
 
 export default function AuthProvider(props) {
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState("");
 
-  const login = (token) => {
-    localStorage.setItem('token', token);
-    setIsAuthenticated(true);
+  useEffect(() => {
+    // Ensure we are on the client side before accessing localStorage
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem('token');
+      const storedUsername = localStorage.getItem('username');
+      
+      setIsAuthenticated(!!token);
+      setUsername(storedUsername || "");
+    }
+  }, []);
+
+  const login = (token, username) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem('token', token);
+      localStorage.setItem('username', username);
+      setIsAuthenticated(true);
+      setUsername(username);
+    }
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    setIsAuthenticated(false);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem('token');
+      localStorage.removeItem('username');
+      setIsAuthenticated(false);
+      setUsername("");
+    }
   };
 
-  useEffect(() => {
-    setIsAuthenticated(!!localStorage.getItem('token'));
-  }, []);
-
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, logout, username }}>
       {props.children}
     </AuthContext.Provider>
   );

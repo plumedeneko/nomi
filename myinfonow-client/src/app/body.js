@@ -11,7 +11,7 @@ import { useState } from "react";
 
 export default function Body() {
   
-  const { isAuthenticated, username, logout } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [page, setPage] = useState(isAuthenticated ? 3 : 1);
 
   let component;
@@ -26,7 +26,5 @@ export default function Body() {
   else if (page == 5)
     component = <GetInfo setPage={setPage} />
 
-  return (
-      {component}
-  );
+  return component;
 }

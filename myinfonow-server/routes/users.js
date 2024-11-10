@@ -42,7 +42,7 @@ usersRouter.post("/login", async (req, res) => {
             return res.status(401).send({message: "Invalid Email or Password"});
 
         const token = user.generateAuthToken();
-        res.status(200).send({token: token, message: "Logged in successfully"});
+        res.status(200).send({token: token, username: req.body.username, message: "Logged in successfully"});
 
     } catch(error) {
         console.log(error);
