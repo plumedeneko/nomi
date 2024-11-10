@@ -4,11 +4,7 @@ const uri = process.env.ATLAS_URI || "";
 
 async function connectToDatabase() {
   try {
-    await mongoose.connect(uri, {
-    //   useNewUrlParser: true,
-    //   useUnifiedTopology: true,
-      dbName: "myinfonow"
-    });
+    await mongoose.connect(uri, { dbName: "myinfonow" });
     console.log('Connected to MongoDB using Mongoose!');
   } catch (err) {
     console.error('Error connecting to MongoDB:', err);
